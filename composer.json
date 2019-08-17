@@ -1,0 +1,18 @@
+{
+    "require": {
+        "php": ">=7.2",
+        "symfony/console": "^4.2",
+        "symfony/process": "^4.2",
+        "symfony/finder": "^4.2",
+        "symfony/filesystem": "^4.2",
+        "james-heinrich/getid3": "^1.9"
+    },
+    "autoload": {
+        "psr-4": {
+            "blueMe\\": "src/"
+        }
+    },
+    "require-dev": {
+        "symfony/var-dumper": "^4.2"
+    }
+}
