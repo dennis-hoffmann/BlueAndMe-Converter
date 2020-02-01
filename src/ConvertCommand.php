@@ -120,7 +120,7 @@ class ConvertCommand extends Command
         \getid3_lib::CopyTagsToComments($fileInfo);
         $tags = array_map(function ($element) {
             return $element[0];
-        }, $fileInfo['comments_html']);
+        }, $fileInfo['comments_html'] ?? []);
 
 
         if (!empty($tags)) {
@@ -142,6 +142,8 @@ class ConvertCommand extends Command
             }
         }
 
+        // In case a slash is part of the filename, replace it with a similar unicode character.
+        $filename = str_replace('/', '⧸', $filename);
         $outputFile = $target . '/' . $filename . '.mp3';
 
         $this->filesystem->mkdir($target, 0775);
@@ -188,7 +190,7 @@ class ConvertCommand extends Command
      *
      * @return bool
      */
-    private function writeTags(string $fileName, array $tags): bool
+    private function writeTags(string $fileName, array $tags = []): bool
     {
         $tagData = [
             'TITLE'       => [''],
@@ -248,7 +250,7 @@ class ConvertCommand extends Command
      */
     private function normalize(string $targetFile, OutputInterface $output): bool
     {
-        $command = sprintf('mp3gain -p -r "%s"', $targetFile);
+        $command = sprintf('mp3gain -p -r -d "%s"', $targetFile);
         $process = new Process($command);
         // Set timeout to ten minutes
         $process->setTimeout(600);
