@@ -59,6 +59,12 @@ class ConvertCommand extends Command
             'Must be set when using a text file');
 
         $this->addOption(
+            'force',
+            'f',
+            InputOption::VALUE_NONE,
+            'Force convert even when already mp3');
+
+        $this->addOption(
             'target-dir',
             't',
             InputOption::VALUE_REQUIRED,
@@ -92,7 +98,7 @@ class ConvertCommand extends Command
         $output->writeln(sprintf('<info>Will work with %d files</info>', count($tracks)));
 
         foreach ($tracks as $track) {
-            $this->convert($track, $input->getOption('target-dir'), $output);
+            $this->convert($track, $input->getOption('target-dir'), $output, $input->hasOption('force'));
 
             $output->writeln(sprintf('<info>Converted %s.</info>', $track->getFilename()));
         }
@@ -109,10 +115,11 @@ class ConvertCommand extends Command
      * @param \SplFileInfo    $file
      * @param string          $target
      * @param OutputInterface $output
+     * @param bool            $force
      *
      * @return bool
      */
-    protected function convert(\SplFileInfo $file, string $target, OutputInterface $output): bool
+    protected function convert(\SplFileInfo $file, string $target, OutputInterface $output, $force = false): bool
     {
         $filename = basename($file->getFilename(), $file->getExtension());
         $fileInfo = $this->tagger->analyze($file->getPathname());
@@ -142,17 +149,16 @@ class ConvertCommand extends Command
             }
         }
 
-        // In case a slash is part of the filename, replace it with a similar unicode character.
-        $filename = str_replace('/', '⧸', $filename);
+        $filename = self::normalizeString($filename);
         $outputFile = $target . '/' . $filename . '.mp3';
 
         $this->filesystem->mkdir($target, 0775);
 
-        if ($file->getExtension() !== 'mp3') {
+        if ($force || $file->getExtension() !== 'mp3') {
             $command = sprintf('ffmpeg -i "%s" -ab 320k "%s"', $file->getPathname(), $outputFile);
             $process = new Process($command);
-            // Set timeout to ten minutes
-            $process->setTimeout(600);
+            // Set timeout to one minute
+            $process->setTimeout(60);
             $process->start();
 
             foreach ($process as $type => $data) {
@@ -229,7 +235,7 @@ class ConvertCommand extends Command
         $tagWriter->filename          = $fileName;
         $tagWriter->tagformats        = ['id3v1'];
         $tagWriter->overwrite_tags    = true;
-        $tagWriter->tag_encoding      = 'UTF-8';
+        $tagWriter->tag_encoding      = 'ISO-8859';
         $tagWriter->remove_other_tags = true;
         $tagWriter->tag_data          = $tagData;
 
@@ -252,8 +258,8 @@ class ConvertCommand extends Command
     {
         $command = sprintf('mp3gain -p -r -d "%s"', $targetFile);
         $process = new Process($command);
-        // Set timeout to ten minutes
-        $process->setTimeout(600);
+        // Set timeout to one minute
+        $process->setTimeout(60);
         $process->start();
 
         foreach ($process as $type => $data) {
@@ -290,6 +296,6 @@ class ConvertCommand extends Command
      */
     private static function normalizeString(string $str = ''): string
     {
-        return html_entity_decode($str);
+        return preg_replace("/[^a-zA-Z0-9\'\-_\(\) ]/", '', html_entity_decode($str));
     }
 }

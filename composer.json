@@ -5,7 +5,8 @@
         "symfony/process": "^4.2",
         "symfony/finder": "^4.2",
         "symfony/filesystem": "^4.2",
-        "james-heinrich/getid3": "^1.9"
+        "james-heinrich/getid3": "^1.9",
+        "ext-simplexml": "*"
     },
     "autoload": {
         "psr-4": {

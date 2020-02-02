@@ -20,9 +20,11 @@ It will do the following things:
 ## Usage
 You may convert complete folders or specify your files in an .xspf playlist file.  
 You can create these playlist files for example by using VLC Media Player.  
+
 When using an .xspf playlist file simply append `-x` as option.  
+To force converting even when the file is already mp3 append `-f`
 ```sh
-./app convert -s <source> -t <target> [-x]
+./app convert -s <source> -t <target> [-x] [-f]
 ```
 ### Converting files from an .xspf playlist file
 ```sh
@@ -32,3 +34,12 @@ When using an .xspf playlist file simply append `-x` as option.
 ```sh
 ./app convert -s "/home/dhoffmann/Music" -t "/media/dhoffmann/USB_Device"
 ```
+
+## Troubleshooting
+
+### Get your USB stick recognized
+- Use FAT32 filesystem
+- Try different vendors and models (SanDisk Extreme works fine)
+- Don't cascade to many folder levels (at most two levels)
+- If none of that works, try to format your stick and give it another name
+ 
