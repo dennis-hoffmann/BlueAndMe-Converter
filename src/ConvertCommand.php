@@ -256,7 +256,7 @@ class ConvertCommand extends Command
      */
     private function normalize(string $targetFile, OutputInterface $output): bool
     {
-        $command = sprintf('mp3gain -p -r -d "%s"', $targetFile);
+        $command = sprintf('mp3gain -p -r -c -s s "%s"', $targetFile);
         $process = new Process($command);
         // Set timeout to one minute
         $process->setTimeout(60);
