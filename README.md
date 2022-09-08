@@ -24,15 +24,19 @@ You can create these playlist files for example by using VLC Media Player.
 When using an .xspf playlist file simply append `-x` as option.  
 To force converting even when the file is already mp3 append `-f`
 ```sh
-./app convert -s <source> -t <target> [-x] [-f]
+./app convert <source> <target-directory> [-x] [-f]
 ```
 ### Converting files from an .xspf playlist file
 ```sh
-./app convert -s "/home/dhoffmann/Music/car_playlist.xspf" -t "/media/dhoffmann/USB_Device" -x
+./app convert "/home/dhoffmann/Music/car_playlist.xspf" "/media/dhoffmann/USB_Device" -x
 ```
 ### Converting whole folder
 ```sh
-./app convert -s "/home/dhoffmann/Music" -t "/media/dhoffmann/USB_Device"
+./app convert "/home/dhoffmann/Music" "/media/dhoffmann/USB_Device"
+```
+### Force converting to .mp3 even if input file is one already
+```sh
+./app convert "/home/dhoffmann/Music" "/media/dhoffmann/USB_Device" -f
 ```
 
 ## Troubleshooting
