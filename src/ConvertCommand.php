@@ -157,7 +157,10 @@ class ConvertCommand extends Command
 
         $fileInfo = $this->tagger->analyze($file->getPathname());
         \getid3_lib::CopyTagsToComments($fileInfo);
-        $tags = array_column($fileInfo['comments_html'] ?? [], 0);
+
+        $tags = array_map(function ($element) {
+            return $element[0];
+        }, $fileInfo['comments_html'] ?? []);
 
         if (!empty($tags)) {
             $title = $tags['title'] ?? '';
